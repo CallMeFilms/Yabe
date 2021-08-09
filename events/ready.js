@@ -3,6 +3,7 @@ const Guild = require("../db/schemas/guild");
 const deletedMessage = require("../db/schemas/deletedMessage");
 const { createCheeseEmbed } = require("../commands/fun/cheese");
 const request = require("request");
+const DailyCheeseGuilds = require("../db/schemas/dailyCheeseGuilds");
 
 module.exports = async (client) => {
     const { config } = client;
@@ -35,14 +36,25 @@ module.exports = async (client) => {
                 body = JSON.parse(body);
 
                 if (body.failed) {
-                    message.channel.send("Sorry something seems to have gone wrong!. try again in a few minutes or submit a bug report");
+                    client.channels.cache.get(process.env.LOG_CHHANEL).send("An error occurred while getting client ready");
                 }
 
                 const embed = createCheeseEmbed(client, body.cheese);
 
-                client.channels.cache.get(process.env.CHEESE_CHANNEL).send("Cheese of the day");
-                const msg = await client.channels.cache.get(process.env.CHEESE_CHANNEL).send(embed);
-                msg.react("🧀");
+                DailyCheeseGuilds.find()
+                    .exec((err, foundGuilds) => {
+                        if (err) {
+                            console.error(err);
+                            client.channels.cache.get(process.env.LOG_CHHANEL).send("An error occurred while getting client ready");
+                            return;
+                        }
+
+                        foundGuilds.forEach(async (guild) => {
+                            client.channels.cache.get(guild.channel).send("Cheese of the day");
+                            const msg = await client.channels.cache.get(guild.channel).send(embed);
+                            msg.react("🧀");
+                        });
+                    });
             })
         }
     }, 1000 * 60);
