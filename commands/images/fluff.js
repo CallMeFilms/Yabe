@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const fetch = require("node-fetch"); 
+const axios = require("axios");
 
 const descs = ["A big cutie!", "A small cutie!", "OwO whats this?", "UwU so adorable...", "Literally shooketh", "if (this.isCute){die()}"];
 
@@ -8,23 +8,21 @@ exports.run = async (client, message, _args) => {
     const avail = ["dog", "cat", "panda", "red_panda", "birb", "fox", "koala", "racoon", "kangaroo"];
     const anim = avail.random();
 
-    let res = await fetch(baseUrl + anim);
+    axios.get(baseUrl + anim)
+        .then((res) => {
+            const imgURL = res.data.link;
 
-    if (!res.ok) {
-        message.channel.send("Sorry something seems to have gone wrong!");
-        console.log(error);
-        return;
-    }
+            const emb = new Discord.MessageEmbed();
+            emb.setDescription = descs.random();
+            emb.setColor(client.config.embedColor);
+            emb.setImage(imgURL);
 
-    body = await res.json();
-    const imgURL = body.link;
-
-    const emb = new Discord.MessageEmbed();
-        emb.setDescription = descs.random();
-        emb.setColor(client.config.embedColor);
-        emb.setImage(imgURL);
-
-    message.channel.send(emb);
+            message.channel.send({ embeds: [emb] });
+        })
+        .catch((err) => {
+            console.log(err);
+            message.channel.send({ content: "Sorry something seems to have gone wrong!" });
+        });
 }
 
 exports.help = {

@@ -1,16 +1,30 @@
-exports.run = (client, message, args) => {
+const Discord = require("discord.js");
 
-    if (!message.member.hasPermission("MANAGE_GUILD")) return message.channel.send("Sorry, you lack permissions to use this command. ¯\\_(ツ)_/¯");
+exports.run = async (client, message, args) => {
+
+    if (!message.member.permissions.has(Discord.Permissions.FLAGS.MANAGE_GUILD)) {
+        message.channel.send({ content: "Sorry, you lack permissions to use this command. ¯\\_(ツ)_/¯" });
+        return;
+    }
 
     let contSend = args.splice(1).join(' ');
 
     let chanSendFind = message.mentions.channels.first() ? message.mentions.channels.first().id : false;
 
-    if (chanSendFind === false) return message.reply('you need to specify a channel to send this message in. `yabe send #<channel_name> <content>`');
-    if (!contSend) return message.reply('I can\'t send an empty message.');
+    if (chanSendFind === false) {
+        await message.reply('you need to specify a channel to send this message in. `yabe send #<channel_name> <content>`');
+        return;
+    }
 
-    client.channels.cache.get(chanSendFind).send(contSend)
-        .then(() => message.react(`✅`))
+    if (!contSend) {
+        await message.reply('I can\'t send an empty message.');
+        return;
+    }
+
+    const channel = await client.channels.fetch(chanSendFind);
+    channel
+        .send({ content: contSend })
+        .then(async () => await message.react(`✅`))
         .catch(console.error);
 }
 

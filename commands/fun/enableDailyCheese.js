@@ -5,22 +5,22 @@ exports.run = (_, message, args) => {
         .exec((err, foundGuild) => {
             if (err) {
                 console.error(err);
-                message.channel.send("An error has occurred, please try again later or send a bug report");
+                message.channel.send({ content: "An error has occurred, please try again later or send a bug report" });
                 return;
             }
             
             if (foundGuild) {
                 // remove from db
                 foundGuild.deleteOne();
-                message.channel.send("Successfully turned off the cheese embed in this server");
+                message.channel.send({ content: "Successfully turned off the cheese embed in this server" });
             } else {
                 // add to db
                 if (!args?.[0]) {
-                    message.channel.send("No channel was specified, please mention a channel");
+                    message.channel.send({ content: "No channel was specified, please mention a channel" });
                     return;
                 }
                 if (!args[0].startsWith("<#")) {
-                    message.channel.send("You need to mention a channel instead of whatever you sent as an argument");
+                    message.channel.send({ content: "You need to mention a channel instead of whatever you sent as an argument" });
                     return;
                 }
                 
@@ -31,7 +31,7 @@ exports.run = (_, message, args) => {
                 guild.channel = channelId;
 
                 guild.save().then(() => {
-                    message.channel.send(`Successfully turned on daily cheese on ${args[0]}`);
+                    message.channel.send({ content: `Successfully turned on daily cheese on ${args[0]}` });
                 })
             }
         });

@@ -5,12 +5,12 @@ exports.run = (client, message, args) => {
 		let maxUsersToDisplay = 30;
 
 		let roles = message.guild.roles.cache;
-		let roleKeys = roles.keyArray();
+		let roleKeys = [...roles.keys()];
 
 		let sendEmbed = (name, role) => {
 			let memberNames = [];
 
-			let roleKeys = role.keyArray()
+			let roleKeys = [...role.keys()];
 			roleKeys.forEach(key => memberNames.push(role.get(key)));
 
 			let emb = new Discord.MessageEmbed();
@@ -34,9 +34,11 @@ exports.run = (client, message, args) => {
 			if(moreThanMax)
 				memberUsers += "...";
 
-			emb.addField(`Who is ${name}:`, memberUsers);
+			if (memberUsers != "") {
+				emb.addField(`Who is ${name}:`, memberUsers);
+			}
 			emb.setFooter(`${memberCount} users have this role${tooManyText}.`)
-			message.channel.send(emb);
+			message.channel.send({ embeds: [emb] });
 		};
 
 		roleKeys.forEach(key => {

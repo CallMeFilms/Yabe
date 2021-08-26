@@ -8,7 +8,7 @@ exports.run = (client, message) => {
         .setFooter("Last updated on 16th/Sep/2020")
         .setColor(client.config.embedColor);
 
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
 }
 
 exports.help = {

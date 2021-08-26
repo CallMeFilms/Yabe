@@ -3,6 +3,7 @@ const Discord = require('discord.js');
 exports.run = (client, message, args) => {
     let personPoke = message.mentions.members.first();
     let pokes = ['https://i.imgur.com/Zi4ahyj.gif', 'https://i.imgur.com/N7g7caI.gif', 'https://i.imgur.com/It4Mk9z.gif', 'https://i.imgur.com/KCAdA7c.gif', 'https://i.imgur.com/H7Ok5tn.gif', 'https://i.imgur.com/xSvkpIh.gif'];
+
     let pokesR = pokes[Math.floor(Math.random() * pokes.length)];
     let quote;
     let quoteR;
@@ -14,7 +15,7 @@ exports.run = (client, message, args) => {
             .setImage(pokesR)
             .setColor(client.config.embedColor);
 
-        message.channel.send(embed);
+        message.channel.send({ embeds: [embed] });
         return;
     }
 
@@ -23,7 +24,7 @@ exports.run = (client, message, args) => {
         .setImage(pokesR)
         .setColor(client.config.embedColor);
 
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
 }
 
 exports.help = {

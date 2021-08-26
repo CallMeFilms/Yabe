@@ -4,6 +4,7 @@ exports.run = (client, message, args) => {
     let slaps = ['https://i.imgur.com/fm49srQ.gif', 'https://i.imgur.com/4MQkDKm.gif', 'https://i.imgur.com/o2SJYUS.gif', 'https://i.imgur.com/oOCq3Bt.gif', 
     'https://i.imgur.com/Agwwaj6.gif', 'https://i.imgur.com/YA7g7h7.gif', 'https://i.imgur.com/mIg8erJ.gif', 'https://i.imgur.com/oRsaSyU.gif', 
     'https://i.imgur.com/kSLODXO.gif', 'https://i.imgur.com/CwbYjBX.gif'];
+
     let slapR = slaps[Math.floor(Math.random() * slaps.length)];
     let personslap = message.mentions.members.first();
     let quote = ['Oof', 'Ouch', 'That hurt', 'Wow', 'LOL', 'Yeet'];
@@ -17,7 +18,7 @@ exports.run = (client, message, args) => {
             .setImage(slapR)
             .setColor(client.config.embedColor);
 
-        message.channel.send(embed);
+        message.channel.send({ embeds: [embed] });
         return;
     }
 
@@ -28,7 +29,7 @@ exports.run = (client, message, args) => {
             .setImage(slapR)
             .setColor(client.config.embedColor);
 
-        message.channel.send(embed);
+        message.channel.send({ embeds: [embed] });
         return;
     }
 
@@ -39,7 +40,7 @@ exports.run = (client, message, args) => {
             .setImage(slapR)
             .setColor(client.config.embedColor);
 
-        message.channel.send(embed);
+        message.channel.send({ embeds: [embed] });
         return;
     }
 
@@ -48,7 +49,7 @@ exports.run = (client, message, args) => {
         .setImage(slapR)
         .setColor(client.config.embedColor);
 
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
 }
 
 exports.help = {

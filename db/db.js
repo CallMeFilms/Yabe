@@ -1,7 +1,7 @@
 const mongoose = require ('mongoose');
 
 const dbURI = process.env.YABE_MONGODB_URI;
-mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
+mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // CONNECTION EVENTS
 mongoose.connection.on('connected', function () {

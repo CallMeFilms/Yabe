@@ -11,7 +11,7 @@ exports.run = (client, message, args) => {
 		emb.setColor(client.config.embedColor);
 		emb.addField("Pokemon Sub Commands:", "`subcmds`, `dex`, `move`");
 
-		message.channel.send(emb);
+		message.channel.send({ embeds: [emb] });
 		return;
 	}
 
@@ -20,7 +20,10 @@ exports.run = (client, message, args) => {
 		if (pkmn == undefined) {
 			pkmn = DEX.filter(poke => poke.name.toLowerCase() == args[1].toLowerCase())[0];
 		}
-		if (pkmn == undefined) { message.channel.send("Sorry, I couldn't find that one."); return; }
+		if (pkmn == undefined) {
+			message.channel.send({ content: "Sorry, I couldn't find that one." });
+			return;
+		}
 
 		pkB = pkmn.base;
 
@@ -37,7 +40,7 @@ exports.run = (client, message, args) => {
 			"\nSpDefense: " + pkB.spDefense, true);
 		pokeEmbed.addField("Type(s):", pkmn.type.join(", "), true);
 
-		message.channel.send(pokeEmbed);
+		message.channel.send({ embeds: [pokeEmbed] });
 	}
 
 	if (args[0] == "move") {
@@ -45,7 +48,10 @@ exports.run = (client, message, args) => {
 		if (move == undefined) {
 			move = MOVES.filter(m => m.no == args[1])[0];
 		}
-		if (move == undefined) { message.channel.send("Sorry, I couldn't find that move!"); return; }
+		if (move == undefined) {
+			message.channel.send({ content: "Sorry, I couldn't find that move!" });
+			return;
+		}
 
 		let moveEmb = new Discord.MessageEmbed();
 		moveEmb.title = move.name + " #" + move.no;
@@ -58,7 +64,7 @@ exports.run = (client, message, args) => {
 		moveEmb.addField("Generation:", move.generation);
 		moveEmb.setColor(client.config.embedColor);
 
-		message.channel.send(moveEmb);
+		message.channel.send({ embeds: [moveEmb] });
 	}
 }
 

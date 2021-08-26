@@ -1,14 +1,16 @@
+const Discord = require("discord.js");
+
 exports.run = (client, message, args) => {
     const { config } = client;
-    const canManageGuild = message.member.hasPermission("MANAGE_GUILD");
+    const canManageGuild = message.member.permissions.has(Discord.Permissions.FLAGS.MANAGE_GUILD);
     const isDev = config.devIds.includes(message.author.id);
 
     if (canManageGuild || isDev) {
         let text = args.join(" ");
         message.delete().catch(console.error);
-        message.channel.send(text);
+        message.channel.send({ content: text });
     } else {
-        message.channel.send("Sorry, you lack permissions to use this command. ¯\\_(ツ)_/¯");
+        message.channel.send({ content: "Sorry, you lack permissions to use this command. ¯\\_(ツ)_/¯" });
     }
 }
 

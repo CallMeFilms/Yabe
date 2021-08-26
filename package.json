@@ -4,21 +4,20 @@
   "description": "",
   "main": "bot.js",
   "dependencies": {
-    "axios": "^0.21.0",
+    "@illusionman1212/djs-pagination": "^1.1.4",
+    "axios": "^0.21.1",
     "dblapi.js": "^2.4.1",
-    "discord.js": "^12.5.3",
-    "djs-pagination": "^1.0.2",
-    "dotenv": "^8.2.0",
-    "enmap": "^4.3.3",
+    "discord.js": "^13.1.0",
+    "dotenv": "^10.0.0",
+    "enmap": "^5.8.7",
     "klaw": "^3.0.0",
-    "mongoose": "^5.11.7",
-    "node-fetch": "^2.6.1",
-    "node-osu": "^1.3.3"
+    "mongoose": "^6.0.0",
+    "node-osu": "^2.2.1"
   },
   "devDependencies": {
-    "@types/jest": "^24.9.1",
-    "jest": "^24.9.0",
-    "nodemon": "^2.0.5"
+    "@types/jest": "^27.0.1",
+    "jest": "^27.0.6",
+    "nodemon": "^2.0.12"
   },
   "scripts": {
     "start": "node bot.js",
@@ -28,6 +27,6 @@
     "dev": "nodemon bot.js"
   },
   "keywords": [],
-  "author": "Canny-Illusion-Senpai",
+  "author": "IllusionMan1212",
   "license": "MIT"
 }

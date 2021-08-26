@@ -23,7 +23,7 @@ module.exports = (client, guild) => {
             .addField("Bots: ", bots, true)
             .setTimestamp();
 
-        client.channels.get(logChannel).send(embed)
+        client.channels.fetch(logChannel).send({ embeds: [embed] })
             .catch(console.error);
     } catch (err) {
         console.log(err);

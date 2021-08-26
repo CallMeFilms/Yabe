@@ -23,8 +23,6 @@ exports.run = (client, message, args) => {
         const results = rollDice(dice, sides);
         const total = results.reduce((sum, next) => sum + next);
 
-        console.log({ dice, sides, total });
-
         resDel = results.join(', ');
         newResult = resDel.toString();
         newResults = newResult.replace(/,(?=[^,]*$)/, ' and');
@@ -33,7 +31,7 @@ exports.run = (client, message, args) => {
             .setColor(client.config.embedColor)
             .setDescription(`You rolled:  ${newResults}\nFor a total of: ${total}`);
 
-        message.channel.send(embed);
+        message.channel.send({ embeds: [embed] });
     }
 
     roll(dice, sides);

@@ -5,7 +5,10 @@ exports.run = async (client, message, args) => {
     const disagree = "❎";
 
     try {
-        if (!message.member.hasPermission("KICK_MEMBERS")) return message.reply("You can't use this command. Ask a moderator to lead the voting.");
+        if (!message.member.permissions.has(Discord.Permissions.FLAGS.KICK_MEMBERS)) {
+            await message.reply("You can't use this command. Ask a moderator to lead the voting.");
+            return;
+        }
 
         let channel;
         let timeS;
@@ -20,11 +23,17 @@ exports.run = async (client, message, args) => {
             votingthing = args.splice(1, args.length);
         }
 
-        if (timeS == '' && votingthing == '') return message.reply("I can't deploy a vote with no parameters! Please use `yabe help vote` for more info on how to use this command!");
-        if (votingthing == '') return message.reply("I can't deploy a vote with no parameters! Please use `yabe help vote` for more info on how to use this command!");
+        if (timeS == '' && votingthing == '') {
+            await message.reply("I can't deploy a vote with no parameters! Please use `yabe help vote` for more info on how to use this command!");
+            return;
+        }
+
+        if (votingthing == '') {
+            await message.reply("I can't deploy a vote with no parameters! Please use `yabe help vote` for more info on how to use this command!");
+            return;
+        }
 
         if (isNaN(timeS)) {
-            // timeS = 10000
             votingthing = timeS + ' ' + votingthing.join(' ');
             timeS = 60000;
         } else {
@@ -44,26 +53,29 @@ exports.run = async (client, message, args) => {
             .setColor(client.config.embedColor);
 
         let msg = await channel.send({
-            embed: VoteEmbed
+            embeds: [VoteEmbed]
         });
         await msg.react(agree);
         await msg.react(disagree);
 
-        const reactions = await msg.awaitReactions(reaction => reaction.emoji.name === agree || reaction.emoji.name === disagree, {
-            time: timeS
+        const reactions = await msg.awaitReactions({
+            time: timeS,
+            filter: (reaction) => reaction.emoji.name === agree || reaction.emoji.name === disagree
         });
-        // msg.delete();
 
-        var no = reactions.get(disagree).count;
-        var yes = reactions.get(agree);
+        // counting yabe's votes too
+        let no = 1;
+        let yes = 1;
 
-        if (yes == undefined) {
-            var yes = 1;
-        } else {
-            var yes = reactions.get(agree).count;
+        if (reactions.get(agree) != undefined) {
+            yes = reactions.get(agree).count;
+        }
+        
+        if (reactions.get(disagree) != undefined) {
+            no = reactions.get(disagree).count;
         }
 
-        var total = yes > no ? "In Favor of Yes" : "In Favor of No";
+        let total = yes > no ? "In Favor of Yes" : "In Favor of No";
         if (yes == no) total = "It was a tie!";
 
         const embed = new Discord.MessageEmbed()
@@ -77,11 +89,12 @@ exports.run = async (client, message, args) => {
             .setColor(client.config.embedColor)
             .setFooter(`Started by ${message.author.username}`, message.author.displayAvatarURL());
 
-        await msg.edit("Voting finished!", {
-            embed
+        await msg.edit({
+            content: "Voting finished!",
+            embeds: [embed]
         });
     } catch (err) {
-        console.log(err);
+        console.error(err);
     }
 };
 

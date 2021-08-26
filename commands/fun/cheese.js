@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const request = require("request");
+const axios = require("axios");
 
 const createCheeseEmbed = exports.createCheeseEmbed = (client, cheese) => {
     const imgURL = cheese.image;
@@ -62,7 +62,8 @@ const createCheeseEmbed = exports.createCheeseEmbed = (client, cheese) => {
         }
 
         if (cheese.attributes.vegetarian !== null) {
-            emb.addField("Vegetarian", cheese.attributes.vegetarian, true);
+            console.log(cheese);
+            emb.addField("Vegetarian", cheese.attributes.vegetarian.toString(), true);
         }
 
         if (cheese.attributes.producers.length) {
@@ -87,24 +88,16 @@ exports.run = (client, message, args) => {
        baseUrl = "https://api.illusionman1212.me/cheese/today"; 
     }
 
-    request(baseUrl, function (error, _response, body) {
-        if (error) {
-            message.channel.send("Sorry something seems to have gone wrong!");
-            console.log(error);
-            return;
-        }
+    axios.get(baseUrl)
+        .then((res) => {
+            const embed = createCheeseEmbed(client, res.data.cheese);
 
-        
-        body = JSON.parse(body);
-
-        if (body.failed) {
-            message.channel.send("Sorry something seems to have gone wrong!. try again in a few minutes or submit a bug report");
-        }
-
-        const embed = createCheeseEmbed(client, body.cheese);
-
-        message.channel.send(embed);
-    })
+            message.channel.send({ embeds: [embed] });
+        })
+        .catch((err) => {
+            console.error(err);
+            message.channel.send({ content: "Sorry something seems to have gone wrong!" });
+        });
 }
 
 exports.help = {

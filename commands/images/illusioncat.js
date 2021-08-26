@@ -1,26 +1,23 @@
 const Discord = require("discord.js");
-const fetch = require("node-fetch");
-
+const axios = require("axios");
 
 exports.run = async (client, message) => {
     const baseUrl = "https://api.illusionman1212.me/kotapi/";
 
-    let res = await fetch(baseUrl);
+    axios.get(baseUrl)
+        .then((res) => {
+            const imgURL = res.data.url;
 
-    if (!res.ok) {
-        message.channel.send("Sorry something seems to have gone wrong!");
-        console.log(error);
-        return;
-    }
+            const emb = new Discord.MessageEmbed();
+            emb.setColor(client.config.embedColor);
+            emb.setImage(imgURL);
 
-    body = await res.json();
-    const imgURL = body.url;
-
-    const emb = new Discord.MessageEmbed();
-        emb.setColor(client.config.embedColor);
-        emb.setImage(imgURL);
-
-    message.channel.send(emb);
+            message.channel.send({ embeds: [emb] });
+        })
+        .catch((err) => {
+            console.error(err);
+            message.channel.send({ content: "Sorry something seems to have gone wrong!" });
+        });
 }
 
 

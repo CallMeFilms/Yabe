@@ -1,4 +1,4 @@
-exports.run = (client, message, args) => {
+exports.run = (_, message, args) => {
 
     let coins = parseInt(args[0]);
 
@@ -6,9 +6,9 @@ exports.run = (client, message, args) => {
         let rand = Math.floor(Math.random() * 2);
 
         if (rand == 0) {
-            message.channel.send("Heads");
+            message.channel.send({ content: "Heads" });
         } else if (rand == 1) {
-            message.channel.send("Tails");
+            message.channel.send({ content: "Tails" });
         }
     } else if (coins < 2 || coins > 15) {
         message.reply("Please enter a number between 2 and 15");
@@ -28,8 +28,8 @@ exports.run = (client, message, args) => {
                 numOfTails++;
             }
         }
-        message.channel.send(allCoins);
-        message.channel.send(`You got ${numOfHeads} Heads, and ${numOfTails} Tails`);
+        message.channel.send({ content: allCoins.join("\n") });
+        message.channel.send({ content: `You got ${numOfHeads} Heads, and ${numOfTails} Tails` });
     }
 }
 

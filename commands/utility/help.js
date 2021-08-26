@@ -3,16 +3,19 @@ const Discord = require("discord.js");
 exports.run = async (client, message, args) => {
     if (args[0]) {
         let command = client.commands.has(args[0]) ? client.commands.get(args[0]) : (client.aliases.has(args[0]) ? client.aliases.get(args[0]) : null);
+
         if (!command) return;
+
         const embed = new Discord.MessageEmbed()
             .addField(`**${command.help.name.toProperCase()} Command**`, command.help.description)
             .addField('Usage', command.help.usage)
             .setColor(client.config.embedColor);
-        if (command.help.aliases) {
-            if (command.help.aliases.length > 0) embed.addField(`Aliases`, `\`${command.help.aliases.join(", ")}\``);
+
+        if (command.help.aliases?.length > 0) {
+            embed.addField(`Aliases`, `\`${command.help.aliases.join(", ")}\``);
         }
 
-        message.channel.send(embed);
+        message.channel.send({ embeds: [embed] });
     } else {
         if (client.config.useNewHelp == "true") {
             var cats = new Map();
@@ -40,10 +43,12 @@ exports.run = async (client, message, args) => {
             embed.setTimestamp();
             embed.setThumbnail(client.user.displayAvatarURL());
             embed.setFooter(`Created by Adam, Hesham and Marvin`);
-            message.channel.send(embed).catch((e) => {
-                message.channel.send(`Something went wrong! Tell a dev or try again.`);
-                console.error(e);
-            });
+
+            message.channel.send({ embeds: [embed] })
+                .catch((e) => {
+                    message.channel.send({ content: `Something went wrong! Tell a dev or try again.` });
+                    console.error(e);
+                });
         } else {
             const embed = new Discord.MessageEmbed()
                 .setColor(client.config.embedColor)
@@ -57,7 +62,7 @@ exports.run = async (client, message, args) => {
                 .setFooter("Created by Adam, Hesham and Marvin")
                 .setTimestamp();
 
-            message.channel.send(embed);
+            message.channel.send({ embeds: [embed] });
         }
     }
 };

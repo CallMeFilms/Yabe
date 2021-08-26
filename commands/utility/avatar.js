@@ -2,42 +2,45 @@ const Discord = require('discord.js');
 
 exports.run = (client, message, args) => {
 	try {
-		var targetName = args.join(' ');
+		let targetName = args.join(' ');
+		let target = null;
 
-		if (targetName.includes('@'))
+		if (targetName.includes('@')) {
 			target = message.mentions.users.first();
-		else if (args.length > 0 && !targetName.includes('@')) {
+		} else if (args.length > 0 && !targetName.includes('@')) {
 			try {
-				var target = message.guild.members.find(member => [member.displayName.toLowerCase(), member.user.username.toLowerCase()].includes(targetName.toLowerCase())).user;
+				target = message.guild.members.find(member => [member.displayName.toLowerCase(), member.user.username.toLowerCase()].includes(targetName.toLowerCase())).user;
 			}
 			catch (err) {
 				// If the supplied name cannot be resolved, check for any discriminators and strip them incase of a "silent mention" used to autofill the target's name
-				//We do the discriminator check after the name check fails, incase the target has a # in their name
+				// We do the discriminator check after the name check fails, incase the target has a # in their name
 				targetName = targetName.substring(0, targetName.indexOf('#'));
-				var target = message.guild.members.find(member => [member.displayName.toLowerCase(), member.user.username.toLowerCase()].includes(targetName.toLowerCase())).user;
+				target = message.guild.members.find(member => [member.displayName.toLowerCase(), member.user.username.toLowerCase()].includes(targetName.toLowerCase())).user;
 			}
+		} else if (args.length == 0) {
+			target = message.author;
 		}
-		else if (args.length == 0)
-			var target = message.author;
 
 		let embed = new Discord.MessageEmbed()
 			.setTitle(`**${target.username}'s** Avatar`)
 			.setImage(target.displayAvatarURL() + "?size=2048")
 			.setColor(client.config.embedColor);
-		return message.channel.send(embed);
+		return message.channel.send({ embeds: [embed] });
 
 	} catch (err) {
 		// If no user can be found, the error will be caught here
-		//Check for perms incase yabe is no longer required to be an administrator in the future (@illusion luv u bby)
+		//Check for perms incase yabe is no longer required to be an administrator in the future
 		if (target == null) {
 			message.react('💤');
-			message.channel.send(`❌ user \`${targetName}\` not found ❌`).then(respMessage => {
-				if (message.guild.me.hasPermission("MANAGE_MESSAGES"))
-					respMessage.delete({ timeout: 10000 });
-			});
-		}
-		else
+			message.channel.send({ content: `❌ user \`${targetName}\` not found ❌` })
+				.then(respMessage => {
+					if (message.guild.me.permissions.has(Discord.Permissions.FLAGS.MANAGE_MESSAGES)) {
+						respMessage.delete({ timeout: 10000 });
+					}
+				});
+		} else {
 			console.log(err);
+		}
 	}
 }
 

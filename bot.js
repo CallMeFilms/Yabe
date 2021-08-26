@@ -5,7 +5,9 @@ const klaw = require("klaw");
 const path = require("path");
 
 const config = require('./library/configuration');
-const client = new Discord.Client();
+const client = new Discord.Client({
+    intents: [Discord.Intents.FLAGS.DIRECT_MESSAGES, Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS]
+});
 client.config = config;
 client.commands = new Enmap();
 client.aliases = new Enmap();

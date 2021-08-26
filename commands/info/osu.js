@@ -9,7 +9,6 @@ exports.run = (client, message, args) => {
     osuApi = osuApi || new osu.Api(config.osuToken);
 
     osuApi.getUser({ u: args.join(' ') }).then(user => {
-        //console.log(user)
         const embed = new Discord.MessageEmbed()
             .setColor(config.embedColor)
             .setThumbnail("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Osu%21Logo_%282015%29.png/600px-Osu%21Logo_%282015%29.png")
@@ -23,7 +22,7 @@ exports.run = (client, message, args) => {
             .addField("Rank A Plays", user.counts.A, true)
             .addField("Rank S Plays", user.counts.S, true)
             .addField("Rank SS Plays", user.counts.SS, true);
-        message.channel.send(embed);
+        message.channel.send({ embeds: [embed] });
     })
 }
 

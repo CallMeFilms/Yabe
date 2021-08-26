@@ -1,25 +1,23 @@
 const Discord = require("discord.js");
-const fetch = require('node-fetch');
+const axios = require("axios");
 
 exports.run = async (client, message) => {
     const baseUrl = "https://thatcopy.pw/catapi/rest";
 
-    let res = await fetch(baseUrl);
+    axios.get(baseUrl)
+        .then((res) => {
+            const imgURL = res.data.webpurl;
 
-    if (!res.ok) {
-        message.channel.send("Sorry something seems to have gone wrong!");
-        console.log(error);
-        return;
-    }
-
-    body = await res.json();
-    const imgURL = body.webpurl;
-
-    const emb = new Discord.MessageEmbed();
-        emb.setColor(client.config.embedColor);
-        emb.setImage(imgURL);
-
-    message.channel.send(emb);
+            const emb = new Discord.MessageEmbed();
+            emb.setColor(client.config.embedColor);
+            emb.setImage(imgURL);
+            
+            message.channel.send({ embeds: [emb] })
+        })
+        .catch((err) => {
+            console.error(err);
+            message.channel.send({ content: "Sorry something seems to have gone wrong!" });
+        });
 }
 
 exports.help = {

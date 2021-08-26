@@ -130,7 +130,7 @@ exports.run = async (client, message, [args, ...words]) => {
             .addField('How to use: ', '`yabe translate lang1-lang2 stuff to translate`')
             .setTimestamp();
 
-        message.channel.send(embed1);
+        message.channel.send({ embeds: [embed1] });
         return;
     } else {
 
@@ -138,13 +138,13 @@ exports.run = async (client, message, [args, ...words]) => {
         let targetLang = args[3] + args[4];
 
         if (!langs.hasOwnProperty(sourceLang))
-            return message.channel.send(`Source language \`${sourceLang}\` doesn't exist.\n(if you believe this is wrong make a bug report using \`yabe bug\`)`);
+            return message.channel.send({ content: `Source language \`${sourceLang}\` doesn't exist.\n(if you believe this is wrong make a bug report using \`yabe bug\`)` });
         if (args[2] !== "-")
-            return message.channel.send('Please correctly format the command, like so\n\n`yabe translate en-es "word or sentence to translate"`');
+            return message.channel.send({ content: 'Please correctly format the command, like so\n\n`yabe translate en-es "word or sentence to translate"`' });
         if (!langs.hasOwnProperty(targetLang))
-            return message.channel.send(`Target Language \`${targetLang}\` doesn't exist.\n(if you believe this is wrong make a bug report using \`yabe bug\`)`);
+            return message.channel.send({ content: `Target Language \`${targetLang}\` doesn't exist.\n(if you believe this is wrong make a bug report using \`yabe bug\`)` });
         if (words == "")
-            return message.channel.send("Please provide a word or sentence to translate.");
+            return message.channel.send({ content: "Please provide a word or sentence to translate." });
 
         let words2translate = words.join(" ").toLowerCase().replace(regex, "");
         let link = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&ie=UTF-8&oe=UTF-8&q=${encodeURI(words2translate)}`;
@@ -158,12 +158,12 @@ exports.run = async (client, message, [args, ...words]) => {
             let embed = new Discord.MessageEmbed()
                 .setDescription(translation[0][0][0])
                 .setColor(client.config.embedColor);
-            message.channel.send(`Translated from ${langs[sourceLang]} to ${langs[targetLang]}:`);
-            message.channel.send(embed);
+            message.channel.send({ content: `Translated from ${langs[sourceLang]} to ${langs[targetLang]}:` });
+            message.channel.send({ embeds: [embed] });
         }
         catch (err) {
             console.log(err);
-            message.channel.send("Something went wrong while translating, please check you formatted it correctly and try again.\nor if you believe this is a bug please report it with `yabe bug`");
+            message.channel.send({ content: "Something went wrong while translating, please check you formatted it correctly and try again.\nor if you believe this is a bug please report it with `yabe bug`" });
         }
         
     }

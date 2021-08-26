@@ -2,7 +2,7 @@ const deletedMessage = require("../db/schemas/deletedMessage");
 const Guild = require("../db/schemas/guild");
 const axios = require("axios");
 
-module.exports = async (client, message) => {
+module.exports = async (_, message) => {
 
     if (message.author.bot) {
         return;
@@ -26,10 +26,11 @@ module.exports = async (client, message) => {
         d_msg.content = message.content;
         d_msg.author = message.author.id;
         d_msg.createdTimestamp = message.createdTimestamp;
-        for (let i = 0; i < message.attachments.array().length; i++) {
-            let image = message.attachments.size > 0 ? extension(message.attachments.array()[i].proxyURL) : false
+        const attachments = [...message.attachments.values()];
+        for (let i = 0; i < attachments.length; i++) {
+            let image = attachments.length > 0 ? extension(attachments[i].proxyURL) : false
 
-            if (image && message.attachments.array()[i].size < 524288) { // limit image size to 512 KB
+            if (image && attachments[i].size < 524288) { // limit image size to 512 KB
                 let res = await axios.request({ method: "get", url: image, responseType: "arraybuffer" });
                 d_msg.images.push("data:" + res.headers["content-type"] + ";base64," + Buffer.from(res.data).toString("base64")); // encode it to base64
             }
@@ -37,7 +38,7 @@ module.exports = async (client, message) => {
         if (foundGuild) { // if server exists in db
             if (foundGuild.deletedMessages.length >= 20) { // maximum 20 deleted messages per server
                 // remove message from db
-                deletedMessage.findByIdAndDelete(foundGuild.deletedMessages[foundGuild.deletedMessages.length - 1]._id, (err, deletedMessage) => {
+                deletedMessage.findByIdAndDelete(foundGuild.deletedMessages[foundGuild.deletedMessages.length - 1]._id, (err) => {
                     if (err) {
                         console.error(err);
                         return;
@@ -46,11 +47,11 @@ module.exports = async (client, message) => {
                 });
             }
             foundGuild.deletedMessages.unshift(d_msg); // add the last deleted message as first in the array
-            d_msg.save((err, newMsg) => { // save msg
-                foundGuild.save((err, updatedGuild) => { // save guild
+            d_msg.save(() => { // save msg
+                foundGuild.save(() => { // save guild
                     Guild.find()
                     .populate('deletedMessages')
-                    .exec((err, guild) => {
+                    .exec((err) => {
                         if (err) {
                             console.error(err);
                             return;
@@ -62,11 +63,11 @@ module.exports = async (client, message) => {
             let guild = new Guild();
             guild.snowflake = message.guild.id;
             guild.deletedMessages.unshift(d_msg);        
-            d_msg.save((err, newMsg) => {
-                guild.save((err, newGuild) => {
+            d_msg.save(() => {
+                guild.save(() => {
                     Guild.find()
                     .populate('deletedMessages')
-                    .exec((err, guild) => {
+                    .exec((err) => {
                         if (err) {
                             console.error(err);
                             return;

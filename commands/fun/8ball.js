@@ -17,9 +17,9 @@ exports.run = (client, message, args) => {
     let answer = answers[Math.floor(Math.random() * answers.length)];
 
     if (args[0]) {
-        message.channel.send(answer);
+        message.channel.send({ content: answer });
     } else {
-        message.channel.send("Give me a question to predict the answer for!");
+        message.channel.send({ content: "Give me a question to predict the answer for!" });
     }
 }
 

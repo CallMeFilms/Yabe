@@ -14,7 +14,7 @@ exports.run = (client, message, _args) => {
         .setFooter(`Version:  ${version} | Currently on ${client.guilds.cache.size} servers with ${client.users.cache.size} users.`)
         .setColor(client.config.embedColor);
 
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
 }
 
 exports.help = {

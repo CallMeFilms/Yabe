@@ -7,28 +7,37 @@ function checkDays(date) {
     return days + (days == 1 ? " day" : " days") + " ago";
 };
 
-exports.run = (client, message) => {
+exports.run = async (client, message) => {
     let embed = new Discord.MessageEmbed();
     let verifLevels = ["None", "Low", "Medium", "(╯°□°）╯︵  ┻━┻", "┻━┻ミヽ(ಠ益ಠ)ノ彡┻━┻"];
-    let region = {
-        "amsterdam": "Amsterdam",
-        "brazil": "Brazil",
-        "europe": "Europe",
-        "eu-central": "Central Europe",
-        "hongkong": "Hong Kong",
-        "india": "India",
-        "japan": "Japan",
-        "russia": "Russia",
-        "singapore": "Singapore",
-        "southafrica": "South Africa",
-        "sydney": "Sydney",
-        "us-central": "U.S. Central",
-        "us-east": "U.S. East",
-        "us-south": "U.S. South",
-        "us-west": "U.S. West",
-        "eu-west": "Western Europe",
-        "vip-us-east": "VIP U.S. East",
-        "london": "London",
+    let locale = {
+        "en-US": "English (United States)",
+        "en-GB": "English (Great Britain)",
+        "zh-CN": "Chinese (China)",
+        "zh-TW": "Chinese (Taiwan)",
+        "cs": "Czech",
+        "da": "Danish",
+        "nl": "Dutch",
+        "fr": "French",
+        "de": "German",
+        "el": "Greek",
+        "hu": "Hungarian",
+        "it": "Italian",
+        "ja": "Japanese",
+        "ko": "Korean",
+        "no": "Norwegian",
+        "pl": "Polish",
+        "pt-BR": "Portuguese (Brazil)",
+        "ru": "Russian",
+        "es-ES": "Spanish (Spain)",
+        "sv-SE": "Swedish",
+        "tr": "Turkish",
+        "bg": "Bulgarian",
+        "uk": "Ukrainian",
+        "fi": "Finnish",
+        "hr": "Croatian",
+        "ro": "Romanian",
+        "lt": "Lithuanian"
     };
 
     var emojis;
@@ -37,18 +46,20 @@ exports.run = (client, message) => {
     } else {
         emojis = message.channel.guild.emojis.cache.map(e => e).join(" ");
     }
+
+    let owner = await message.guild.fetchOwner();
     embed.setAuthor(message.guild.name, message.guild.iconURL() ? message.guild.iconURL() : client.user.displayAvatarURL())
         .setThumbnail(message.guild.iconURL() ? message.guild.iconURL() : client.user.displayAvatarURL())
         .addField("Created", `${message.guild.createdAt.toString().substr(0, 15)},\n${checkDays(message.guild.createdAt)}`, true)
         .addField("ID", message.guild.id, true)
-        .addField("Owner", `${message.guild.owner.user.username}#${message.guild.owner.user.discriminator}`, true)
-        .addField("Region", region[message.guild.region], true)
-        .addField("Members", message.guild.memberCount, true)
-        .addField("Roles", message.guild.roles.cache.size, true)
-        .addField("Channels", message.guild.channels.cache.size, true)
-        //.addField("Emojis", emojis, true)
+        .addField("Owner", `${owner.user.username}#${owner.user.discriminator}`, true)
+        .addField("Locale", locale[message.guild.preferredLocale], true)
+        .addField("Members", message.guild.memberCount.toString(), true)
+        .addField("Roles", message.guild.roles.cache.size.toString(), true)
+        .addField("Channels", message.guild.channels.cache.size.toString(), true)
+        // .addField("Emojis", emojis, true)
         .setColor(client.config.embedColor);
-    message.channel.send({ embed });
+    message.channel.send({ embeds: [embed] });
 }
 
 exports.help = {

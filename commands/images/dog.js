@@ -1,19 +1,16 @@
-const fetch = require('node-fetch');
+const axios = require("axios");
 
-exports.run = async (client, message, args) => {
+exports.run = async (_, message) => {
     const url = 'https://random.dog/woof.json';
     
-    let res = await fetch(url);
-
-    if(!res.ok){
-        message.channel.send("Something went wrong! Tell a dev or try again.")
-        return
-    }
-
-    const json = await res.json();
-
-    message.channel.send(json.url);
-
+    axios.get(url)
+        .then((res) => {
+            message.channel.send(res.data.url);
+        })
+        .catch((err) => {
+            console.error(err);
+            message.channel.send({ content: "Something went wrong! Tell a dev or try again." });
+        });
 }
 
 exports.help = {

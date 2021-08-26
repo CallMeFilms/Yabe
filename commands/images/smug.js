@@ -1,34 +1,24 @@
 const Discord = require("discord.js");
-const fetch = require("node-fetch"); 
+const axios = require("axios");
 
 exports.run = async (client, message) => {
     const { config } = client;
     const url = "https://api.imgur.com/3/album/NXyuO/images";
-    const options = {
-        method: "GET",
-        headers: {
-            "Authorization": `Client-ID ${config.imgurClientId}`,
-        }
-    };
 
-    let res = await fetch(url, options);
+    axios.get(url, {
+        headers: { "Authorization": `Client-ID ${config.imgurClientId}` }
+    })
+        .then((res) => {
+            let embed = new Discord.MessageEmbed()
+                .setColor(client.config.embedColor)
+                .setImage(res.data.data[Math.floor(Math.random() * res.data.data.length)].link);
 
-    if (!res.ok){
-        console.log(res);
-        message.channel.send("Something went wrong! Tell a dev or try again.");
-        return;
-    }
-    try { //better to be safe than sorry
-        let image = await res.json();
-        let embed = new Discord.MessageEmbed()
-            .setColor(client.config.embedColor)
-            .setImage(image.data[Math.floor(Math.random() * image.data.length)].link);
-        message.channel.send(embed);
-    }
-    catch (err) {
-        console.log(err);
-        message.channel.send("An error occured while getting your smug, try again and if the problem persists make a bug report using `yabe bug <bug report>`");
-    }
+            message.channel.send({ embeds: [embed] });
+        })
+        .catch((err) => {
+            console.error(err.response.data);
+            message.channel.send({ content: "An error occured while getting your smug, try again and if the problem persists make a bug report using `yabe bug <bug report>`" });
+        });
 }
 
 exports.help = {
