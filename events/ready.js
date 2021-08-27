@@ -7,7 +7,6 @@ const DailyCheeseGuilds = require("../db/schemas/dailyCheeseGuilds");
 
 module.exports = async (client) => {
     const { config } = client;
-    //const activitiesList = [`coding-yabe-sei.io`, `for ${client.users.size} users on ${client.guilds.size} servers`, `with the >help command`, `with the devs`]
     await client.wait(2000);
     // Discords API can take upt to 2-5 seconds to be fully ready. This makes sure the bot doesn't fo any of the following code before that.
     // - Darko
@@ -33,33 +32,28 @@ module.exports = async (client) => {
                 .then((res) => {
                     const embed = createCheeseEmbed(client, res.data.cheese);
 
-                    DailyCheeseGuilds.find().exec((err, foundGuilds) => {
+                    DailyCheeseGuilds.find().exec(async (err, foundGuilds) => {
                         if (err) {
                             console.error(err);
-                            client.channels
-                                .fetch(process.env.LOG_CHHANEL)
-                                .send(
-                                    { content: "An error occurred while getting client ready" }
-                                );
+                            const channel = await client.channels.fetch(process.env.LOG_CHHANEL);
+
+                            channel.send({ content: "An error occurred while getting client ready" });
                             return;
                         }
 
                         foundGuilds.forEach(async (guild) => {
-                            const msg = await client.channels
-                                .fetch(guild.channel.id)
-                                .send({ content: "Cheese of the day", embeds: [embed] });
+                            const channel = await client.channels.fetch(guild.channel.id);
+                            const msg = await channel.send({ content: "Cheese of the day", embeds: [embed] });
                             await msg.react("🧀");
                         });
                     });
                 })
-                .catch((err) => {
+                .catch(async (err) => {
                     console.error(err);
                     message.channel.send({ content: "Sorry something seems to have gone wrong!" });
-                    client.channels
-                        .fetch(process.env.LOG_CHANNEL)
-                        .send(
-                            { content: "An error has occurred while getting client ready" }
-                        );
+                    const channel = await client.channels.fetch(process.env.LOG_CHANNEL);
+
+                    channel.send({ content: "An error has occurred while getting client ready" });
                 });
         }
     }, 1000 * 60);
@@ -122,6 +116,7 @@ module.exports = async (client) => {
             channel.send({ embeds: [embed] });
         })
         .catch((err) => {
-            console.error(`Unable to find channel: ${channelId}`);
+            console.log(`Unable to find channel: ${channelId}`);
+            console.error(err);
         });
 };
