@@ -62,7 +62,6 @@ const createCheeseEmbed = exports.createCheeseEmbed = (client, cheese) => {
         }
 
         if (cheese.attributes.vegetarian !== null) {
-            console.log(cheese);
             emb.addField("Vegetarian", cheese.attributes.vegetarian.toString(), true);
         }
 

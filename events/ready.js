@@ -42,7 +42,7 @@ module.exports = async (client) => {
                         }
 
                         foundGuilds.forEach(async (guild) => {
-                            const channel = await client.channels.fetch(guild.channel.id);
+                            const channel = await client.channels.fetch(guild.channel);
                             const msg = await channel.send({ content: "Cheese of the day", embeds: [embed] });
                             await msg.react("🧀");
                         });
