@@ -12,8 +12,7 @@ const Configuration = {
   devs: {
       canarado: '427491040468140043',
       illusion: '407351772575694879',
-      senpai: '428678912558628865',
-      geoday: '844077987178872882',
+      senpai: '428678912558628865'
   },
   devIds: [], // IDE Autocomplete Placeholder for Generated Property
   useNewHelp: process.env.USE_NEW_HELP || 'true',
