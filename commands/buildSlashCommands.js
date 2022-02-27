@@ -10,14 +10,13 @@ require('fs')
 		if (err) throw err
 		
 		commandCategories.forEach(commandCategory => {
-			console.log(commandCategory)
-
-			commandCategory.forEach(commands => {
-				require('fs').readdir(`./${commandCategory}`, commands => {
-					console.log(commands)
+			if (commandCategory != "buildSlashCommands.js") {
+				require('fs').readdir(`./${commandCategory}`, (err, commandArray) => {
+					commandArray.forEach(command => {
+						console.log(command.slice(0, -3))
+					})
 				})
-			})
-			
+			}
 		})
 	});
 
